@@ -5,6 +5,10 @@ jason
 
 Provides JSON unmarshall for Go in a very relaxed manner, using [reflekt](https://github.com/ukautz/reflekt).
 
+My use-case is parsing JSON from multiple inputs, which has slight format difference (eg one
+source encodes integer as quoted string, the other source as float, the next as, well, integer..
+don't get me started on bool!).
+
 Documentation
 -------------
 
@@ -39,3 +43,10 @@ for _, s := range from {
     json.Unmarshal([]byte(s), o)
 }
 ```
+
+### JSON vs Time
+
+If your JSON contains time strings and you wan to parse them into `time.Time` objects, check
+out `jason.TimeFormats`, which you can manipulate to a shorter list (less recognized, better
+performance) or extend (more recognized, worse performance).
+

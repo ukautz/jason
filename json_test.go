@@ -4,6 +4,7 @@ import (
 	"fmt"
 	. "github.com/smartystreets/goconvey/convey"
 	"testing"
+	"time"
 )
 
 type testJsonObjectSuper struct {
@@ -16,6 +17,7 @@ type testJsonObject struct {
 	Bar   float64                `json:"bar"`
 	Baz   string                 `json:"baz"`
 	Boing bool                   `json:"boing"`
+	Zoing time.Time              `json:"zoing"`
 	Arg   map[string]interface{} `json:"arg"`
 }
 
@@ -58,6 +60,51 @@ var testsRelaxedUnmarshalJson = []struct {
 			Arg: map[string]interface{}{
 				"bla": "blub",
 			},
+		},
+	},
+	{
+		raw: `{"zoing": "2015-03-12"}`,
+		obj: &testJsonObject{
+			Zoing: func() time.Time {
+				t, _ := time.Parse("2006-01-02", "2015-03-12");
+				return t
+			}(),
+		},
+	},
+	{
+		raw: `{"zoing": "2015-03-12 20:33:21"}`,
+		obj: &testJsonObject{
+			Zoing: func() time.Time {
+				t, _ := time.Parse("2006-01-02 15:04:05", "2015-03-12 20:33:21");
+				return t
+			}(),
+		},
+	},
+	{
+		raw: `{"zoing": "2015-03-22T20:11:00+01:00"}`,
+		obj: &testJsonObject{
+			Zoing: func() time.Time {
+				t, _ := time.Parse(time.RFC3339, "2015-03-22T20:11:00+01:00");
+				return t
+			}(),
+		},
+	},
+	{
+		raw: `{"zoing": "2015-03-12T20:33:21.379118462+01:00"}`,
+		obj: &testJsonObject{
+			Zoing: func() time.Time {
+				t, _ := time.Parse(time.RFC3339Nano, "2015-03-12T20:33:21.379118462+01:00");
+				return t
+			}(),
+		},
+	},
+	{
+		raw: `{"zoing": "2015-03-12 20:33:21.379118462 +0100 CET"}`,
+		obj: &testJsonObject{
+			Zoing: func() time.Time {
+				t, _ := time.Parse(`2006-01-02 15:04:05.999999999 -0700 MST`, "2015-03-12 20:33:21.379118462 +0100 CET");
+				return t
+			}(),
 		},
 	},
 	/*
