@@ -6,6 +6,7 @@ import (
 	"reflect"
 	. "github.com/ukautz/reflekt"
 	"time"
+	"strings"
 )
 
 var (
@@ -69,7 +70,7 @@ func RelaxedUnmarshalJSONMapCustom(obj interface{}, b []byte, cb func(val reflec
 		tag := ft.Tag
 		n := tag.Get("json")
 		if n == "" {
-			continue
+			n = strings.ToLower(ft.Name)
 		}
 		v, ok := x[n]
 
@@ -105,8 +106,6 @@ func RelaxedUnmarshalJSONMapCustom(obj interface{}, b []byte, cb func(val reflec
 						fv.Set(reflect.ValueOf(t))
 					}
 			}
-		default:
-			fmt.Printf("DUNNO %s - %s\n", fv.Type(), reflect.TypeOf(v))
 		}
 	}
 

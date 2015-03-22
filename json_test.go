@@ -14,9 +14,9 @@ type testJsonObjectSuper struct {
 type testJsonObject struct {
 	testJsonObjectSuper
 	Foo   int                    `json:"foo"`
-	Bar   float64                `json:"bar"`
+	Bar   float64
 	Baz   string                 `json:"baz"`
-	Boing bool                   `json:"boing"`
+	Boing bool
 	Zoing time.Time              `json:"zoing"`
 	Arg   map[string]interface{} `json:"arg"`
 }

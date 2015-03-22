@@ -19,10 +19,10 @@ Examples
 
 ``` go
 type Me struct {
-    Foo   int    `json:"foo"`
-    Bar   float  `json:"bar"`
-    Baz   bool   `json:"baz"`
-    Zoing string `json:"zoing"`
+    Foo   int     `json:"xfoo"`
+    Bar   float64
+    Baz   bool
+    Zoing string  `json:"xzoing"`
 }
 
 func (this *Me) UnmarshalJSON(b []byte) error {
@@ -33,9 +33,9 @@ func (this *Me) UnmarshalJSON(b []byte) error {
 
 // all the following are unmarshalled to an equal object
 from := []string{
-    `{"foo":1, "bar": 1.1, "baz": true, "zoing": "bla"}`,
-    `{"foo":"1", "bar": "1.1", "baz": "true", "zoing": "bla"}`,
-    `{"foo":"1.1", "bar": "1.1", "baz": 1, "zoing": "bla"}`,
+    `{"xfoo":1, "bar": 1.1, "baz": true, "xzoing": "bla"}`,
+    `{"xfoo":"1", "bar": "1.1", "baz": "true", "xzoing": "bla"}`,
+    `{"xfoo":"1.1", "bar": "1.1", "baz": 1, "xzoing": "bla"}`,
 }
 
 for _, s := range from {
@@ -46,7 +46,7 @@ for _, s := range from {
 
 ### JSON vs Time
 
-If your JSON contains time strings and you wan to parse them into `time.Time` objects, check
-out `jason.TimeFormats`, which you can manipulate to a shorter list (less recognized, better
+If your JSON contains time strings and you want to parse them into `time.Time` objects, check
+out `jason.TimeFormats`, which you can change to a shorter list (less recognized, better
 performance) or extend (more recognized, worse performance).
 
