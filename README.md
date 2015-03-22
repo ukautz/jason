@@ -1,7 +1,14 @@
+[![Build Status](https://travis-ci.org/ukautz/jason.svg?branch=master)](https://travis-ci.org/ukautz/jason)
+
 jason
 =====
 
 Provides JSON unmarshall for Go in a very relaxed manner, using [reflekt](https://github.com/ukautz/reflekt).
+
+Documentation
+-------------
+
+GoDoc can be [found here](http://godoc.org/github.com/ukautz/jason)
 
 Examples
 --------
