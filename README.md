@@ -5,7 +5,7 @@ jason
 
 Provides JSON unmarshall for Go in a very relaxed manner, using [reflekt](https://github.com/ukautz/reflekt).
 
-My use-case is parsing JSON from multiple inputs, which has slight format difference (eg one
+My use-case is parsing JSON from multiple inputs, which have slight format differences (eg one
 source encodes integer as quoted string, the other source as float, the next as, well, integer..
 don't get me started on bool!).
 
