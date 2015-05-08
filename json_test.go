@@ -3,6 +3,7 @@ package jason
 import (
 	"fmt"
 	. "github.com/smartystreets/goconvey/convey"
+	"reflect"
 	"testing"
 	"time"
 )
@@ -13,16 +14,16 @@ type testJsonObjectSuper struct {
 
 type testJsonObject struct {
 	testJsonObjectSuper
-	Foo   int                    `json:"foo"`
+	Foo   int `json:"foo"`
 	Bar   float64
-	Baz   string                 `json:"baz"`
+	Baz   string `json:"baz"`
 	Boing bool
 	Zoing time.Time              `json:"zoing"`
 	Arg   map[string]interface{} `json:"arg"`
 }
 
 var testsRelaxedUnmarshalJson = []struct {
-	obj *testJsonObject
+	obj interface{}
 	raw string
 }{
 	/*
@@ -66,7 +67,7 @@ var testsRelaxedUnmarshalJson = []struct {
 		raw: `{"zoing": "2015-03-12"}`,
 		obj: &testJsonObject{
 			Zoing: func() time.Time {
-				t, _ := time.Parse("2006-01-02", "2015-03-12");
+				t, _ := time.Parse("2006-01-02", "2015-03-12")
 				return t
 			}(),
 		},
@@ -75,7 +76,7 @@ var testsRelaxedUnmarshalJson = []struct {
 		raw: `{"zoing": "2015-03-12 20:33:21"}`,
 		obj: &testJsonObject{
 			Zoing: func() time.Time {
-				t, _ := time.Parse("2006-01-02 15:04:05", "2015-03-12 20:33:21");
+				t, _ := time.Parse("2006-01-02 15:04:05", "2015-03-12 20:33:21")
 				return t
 			}(),
 		},
@@ -84,7 +85,7 @@ var testsRelaxedUnmarshalJson = []struct {
 		raw: `{"zoing": "2015-03-22T20:11:00+01:00"}`,
 		obj: &testJsonObject{
 			Zoing: func() time.Time {
-				t, _ := time.Parse(time.RFC3339, "2015-03-22T20:11:00+01:00");
+				t, _ := time.Parse(time.RFC3339, "2015-03-22T20:11:00+01:00")
 				return t
 			}(),
 		},
@@ -93,7 +94,7 @@ var testsRelaxedUnmarshalJson = []struct {
 		raw: `{"zoing": "2015-03-12T20:33:21.379118462+01:00"}`,
 		obj: &testJsonObject{
 			Zoing: func() time.Time {
-				t, _ := time.Parse(time.RFC3339Nano, "2015-03-12T20:33:21.379118462+01:00");
+				t, _ := time.Parse(time.RFC3339Nano, "2015-03-12T20:33:21.379118462+01:00")
 				return t
 			}(),
 		},
@@ -102,7 +103,7 @@ var testsRelaxedUnmarshalJson = []struct {
 		raw: `{"zoing": "2015-03-12 20:33:21.379118462 +0100 CET"}`,
 		obj: &testJsonObject{
 			Zoing: func() time.Time {
-				t, _ := time.Parse(`2006-01-02 15:04:05.999999999 -0700 MST`, "2015-03-12 20:33:21.379118462 +0100 CET");
+				t, _ := time.Parse(`2006-01-02 15:04:05.999999999 -0700 MST`, "2015-03-12 20:33:21.379118462 +0100 CET")
 				return t
 			}(),
 		},
@@ -189,6 +190,63 @@ func TestRelaxedUnmarshalJson(t *testing.T) {
 				err := RelaxedUnmarshalJSONMap(o, []byte(test.raw))
 				So(err, ShouldBeNil)
 				So(o, ShouldResemble, test.obj)
+			})
+		}
+	})
+}
+
+type testJsonStrange struct {
+	Super   string `json:"super"`
+	Trooper string `json:"trooper"`
+	Foo     int
+	Bar     float64
+	Baz     bool
+}
+
+var testsRelaxedUnmarshalFreakyJson = []struct {
+	obj interface{}
+	raw string
+	t   reflect.Type
+}{
+	{
+		raw: `{"super":null, "trooper": "foo"}`,
+		obj: &testJsonStrange{
+			Super:   "",
+			Trooper: "foo",
+		},
+		t: reflect.TypeOf(testJsonStrange{}),
+	},
+	{
+		raw: `{"foo":null, "trooper": "foo"}`,
+		obj: &testJsonStrange{
+			Trooper: "foo",
+		},
+		t: reflect.TypeOf(testJsonStrange{}),
+	},
+	{
+		raw: `{"bar":null, "trooper": "foo"}`,
+		obj: &testJsonStrange{
+			Trooper: "foo",
+		},
+		t: reflect.TypeOf(testJsonStrange{}),
+	},
+	{
+		raw: `{"baz":null, "trooper": "foo"}`,
+		obj: &testJsonStrange{
+			Trooper: "foo",
+		},
+		t: reflect.TypeOf(testJsonStrange{}),
+	},
+}
+
+func TestRelaxedUnmarshalFreakyJson(t *testing.T) {
+	Convey("Unmarshalling freaky JSON to object very relaxed..", t, func() {
+		for idx, test := range testsRelaxedUnmarshalFreakyJson {
+			Convey(fmt.Sprintf("%d) from %s", idx, test.raw), func() {
+				o := reflect.New(test.t)
+				err := RelaxedUnmarshalJSONMap(o.Interface(), []byte(test.raw))
+				So(err, ShouldBeNil)
+				So(o.Interface(), ShouldResemble, test.obj)
 			})
 		}
 	})

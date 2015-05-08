@@ -3,10 +3,10 @@ package jason
 import (
 	"encoding/json"
 	"fmt"
-	"reflect"
 	. "github.com/ukautz/reflekt"
-	"time"
+	"reflect"
 	"strings"
+	"time"
 )
 
 var (
@@ -97,14 +97,14 @@ func RelaxedUnmarshalJSONMapCustom(obj interface{}, b []byte, cb func(val reflec
 			vt := reflect.TypeOf(v)
 			vk := vt.Kind()
 			switch {
-				case vt == fv.Type():
-					fv.Set(vv)
-				case vk == reflect.String:
-					if t, err := extractTime(v.(string)); err != nil {
-						return err
-					} else {
-						fv.Set(reflect.ValueOf(t))
-					}
+			case vt == fv.Type():
+				fv.Set(vv)
+			case vk == reflect.String:
+				if t, err := extractTime(v.(string)); err != nil {
+					return err
+				} else {
+					fv.Set(reflect.ValueOf(t))
+				}
 			}
 		}
 	}
